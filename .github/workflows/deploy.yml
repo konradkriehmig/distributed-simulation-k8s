@@ -36,7 +36,7 @@ jobs:
           inlineScript: |
             az group create \
               --name RG-backtest-engine-distributed \
-              --location eastus2 \
+              --location canadacentral \
               --tags project=backtest
 
   network:
@@ -58,7 +58,7 @@ jobs:
           scope: resourcegroup
           resourceGroupName: RG-backtest-engine-distributed
           template: ./infra/network.json
-          parameters: location=eastus2
+          parameters: location=canadacentral
           deploymentName: network
 
   # Storage
@@ -81,7 +81,7 @@ jobs:
           scope: resourcegroup
           resourceGroupName: RG-backtest-engine-distributed
           template: ./infra/storage.json
-          parameters: location=eastus2 storageAccountName=${{ secrets.STORAGE_ACCOUNT_NAME }}
+          parameters: location=canadacentral storageAccountName=${{ secrets.STORAGE_ACCOUNT_NAME }}
           deploymentName: storage
 
   # Database
@@ -104,7 +104,7 @@ jobs:
           scope: resourcegroup
           resourceGroupName: RG-backtest-engine-distributed
           template: ./infra/database.json
-          parameters: location=eastus2 administratorPassword=${{ secrets.POSTGRES_PASSWORD }} serverName=pg-db-bed
+          parameters: location=canadacentral administratorPassword=${{ secrets.POSTGRES_PASSWORD }} serverName=pg-db-bed
           deploymentName: database
 
   # Compute
@@ -127,7 +127,7 @@ jobs:
           scope: resourcegroup
           resourceGroupName: RG-backtest-engine-distributed
           template: ./infra/compute.json
-          parameters: location=eastus2 adminPublicKey="${{ secrets.SSH_PUBLIC_KEY }}" storageAccountName=${{ secrets.STORAGE_ACCOUNT_NAME }} transformVmSize=Standard_D4s_v3 vmssVmSize=Standard_D4s_v3
+          parameters: location=canadacentral adminPublicKey="${{ secrets.SSH_PUBLIC_KEY }}" storageAccountName=${{ secrets.STORAGE_ACCOUNT_NAME }} transformVmSize=Standard_D4s_v3 vmssVmSize=Standard_D4s_v3
           deploymentName: compute
 
       - name: Assign Storage Roles to VMSS
