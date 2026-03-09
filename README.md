@@ -31,7 +31,7 @@ How to deploy this project:
 6. Give yourself storage blob data contributor permissions
 7. Upload raw data from this repo in storage account in raw data folder
 8. Github actions: push jobs to queue
-9. Give yourself permissions (storage queue data reader) to check whether jobs landed in queue storage<img width="898" height="135" alt="image" src="https://github.com/user-attachments/assets/060d03b6-1ce6-47fe-bfd6-b2de5650fe0a" />
+9. Give yourself permissions (storage queue data reader) to check whether jobs landed in queue storage
 
 
 ## Skills Demonstrated
