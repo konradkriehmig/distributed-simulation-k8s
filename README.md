@@ -1,3 +1,0 @@
-I ran a monte carlo simulation to show different ways of speeding it up and determining an optimal infrastructure to run on. This assumes that a simulation will not run once but multiple times for different options contracts and maybe even used for some automatic trades.
-
-The program is determining fair prices for European options. It makes no sense from a business perspective, since you would just use the Black-Scholes formula. However, a similar program would make sense to price exotic options with different parameters. I just use European options in this project for simplicity since the underlying compute logic is fairly the same.
