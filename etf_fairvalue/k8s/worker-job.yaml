@@ -1,0 +1,75 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: etf-mc-worker
+  labels:
+    app: etf-mc-worker
+spec:
+  # ── Indexed Job: each pod gets a unique JOB_COMPLETION_INDEX (0..99) ──────
+  completionMode: Indexed
+  completions: 100
+  parallelism: 20
+
+  # Retry at most once per pod on transient failure
+  backoffLimit: 3
+
+  template:
+    metadata:
+      labels:
+        app: etf-mc-worker
+    spec:
+      restartPolicy: OnFailure
+
+      containers:
+        - name: worker
+          image: <YOUR_REGISTRY>/etf-mc-worker:latest
+          imagePullPolicy: Always
+
+          # CLI args — batch-id and seed are both set from JOB_COMPLETION_INDEX
+          # so every worker produces a deterministic, non-overlapping set of paths.
+          command:
+            - python
+            - -m
+            - etf_fairvalue.worker
+          args:
+            - --batch-id=$(JOB_COMPLETION_INDEX)
+            - --num-paths=10000
+            - --horizon-days=5
+            - --seed=$(JOB_COMPLETION_INDEX)
+            - --config-dir=/data/config
+            - --results-dir=/data/results
+
+          env:
+            - name: JOB_COMPLETION_INDEX
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.annotations['batch.kubernetes.io/job-completion-index']
+
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "512Mi"
+            limits:
+              cpu: "1"
+              memory: "1Gi"
+
+          volumeMounts:
+            - name: etf-mc-data
+              mountPath: /data
+
+      volumes:
+        - name: etf-mc-data
+          persistentVolumeClaim:
+            claimName: etf-mc-data
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: etf-mc-data
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
