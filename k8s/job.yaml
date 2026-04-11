@@ -1,0 +1,44 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: etf-mc-job
+spec:
+  completionMode: Indexed
+  completions: 100
+  parallelism: 20
+  template:
+    spec:
+      nodeSelector:
+        agentpool: userpool
+      containers:
+        - name: worker
+          image: montecarloengine.azurecr.io/etf-mc-worker:latest
+          args:
+            - "--num-paths"
+            - "10000"
+            - "--horizon-days"
+            - "5"
+            - "--results-dir"
+            - "/data/results"
+            - "--config-dir"
+            - "/data/config"
+          volumeMounts:
+            - name: config-volume
+              mountPath: /data/config
+            - name: results-volume
+              mountPath: /data/results
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+      volumes:
+        - name: config-volume
+          configMap:
+            name: config-bundle
+        - name: results-volume
+          emptyDir: {}
+      restartPolicy: Never
+  backoffLimit: 5

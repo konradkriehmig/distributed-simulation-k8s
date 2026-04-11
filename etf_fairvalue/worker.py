@@ -277,7 +277,7 @@ def main(argv: list[str] | None = None) -> None:
 
     # 5. Write output
     out_path = write_results(nav_values, args.results_dir, args.batch_id)
-    print(f"[worker] Results written → {out_path}")
+    print(f"[worker] Results written -> {out_path}")
 
 
 if __name__ == "__main__":

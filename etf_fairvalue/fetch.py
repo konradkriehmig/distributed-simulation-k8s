@@ -62,7 +62,6 @@ def _holdings_from_yfinance() -> pd.DataFrame:
     df["weight"] = df["weight"].astype(float)
     return df
 
-
 def _holdings_from_csv(path: Path) -> pd.DataFrame:
     """Load holdings from a local CSV file with columns: ticker,weight."""
     df = pd.read_csv(path)
@@ -73,7 +72,6 @@ def _holdings_from_csv(path: Path) -> pd.DataFrame:
     df["weight"] = df["weight"].astype(float)
     return df
 
-
 def get_holdings() -> pd.DataFrame:
     """Return DataFrame[ticker, weight], trying yfinance first then CSV fallback."""
     try:
@@ -83,7 +81,6 @@ def get_holdings() -> pd.DataFrame:
     except Exception as exc:
         print(f"[fetch] yfinance holdings failed ({exc}); falling back to CSV at {HOLDINGS_CSV}")
         return _holdings_from_csv(HOLDINGS_CSV)
-
 
 # ---------------------------------------------------------------------------
 # Price history
