@@ -55,7 +55,7 @@ def _holdings_from_yfinance() -> pd.DataFrame:
     for col in df.columns:
         if col in ("symbol", "ticker", "holding"):
             rename_map[col] = "ticker"
-        elif col in ("holdingpercent", "weight", "pct"):
+        elif col in ("holdingpercent", "holding percent", "weight", "pct"):
             rename_map[col] = "weight"
     df = df.rename(columns=rename_map)
     df = df[["ticker", "weight"]].dropna()

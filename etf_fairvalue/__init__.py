@@ -1,6 +1,6 @@
 """
 ETF Fair Value Monte Carlo Engine
-Estimates the fair value of the XLK ETF using correlated GBM simulations
+Estimates the fair value of the XLK ETF using correlated Geometric Brownian Motion simulations
 across all constituents with Cholesky-decomposed covariance.
 """
 
