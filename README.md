@@ -1,4 +1,4 @@
-## ETF Fair Value Monte Carlo Engine
+## Operating system to run Monte Carlo simulations estimating the NAV of the XLK ETF
 
 Estimates the **fair value of the XLK ETF** by running correlated Geometric
 Brownian Motion (GBM) simulations across all ~70 stocks using a
