@@ -5,6 +5,14 @@
 - Upload config to K8s
 - navigate to project folder
 - login to Azure on your terminal
+- skip this next step if you haven't made changes to the worker file:
+```
+docker build --platform linux/amd64 -t etf-mc-worker:latest .
+az acr login --name <acr-name>
+docker tag etf-mc-worker:latest <acr-name>.azurecr.io/etf-mc-worker:latest
+docker push <acr-name>.azurecr.io/etf-mc-worker:latest
+```
+
 - connect AKS cluster to access confing file
 ```
 az aks get-credentials --resource-group <resource-group-name> --name <aks-cluster-name>
