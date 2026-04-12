@@ -31,7 +31,6 @@ kubectl apply -f k8s/job.yaml
 - monitor progress
 ```
 kubectl get job etf-mc-job
-#or
 kubectl get pods --watch
 ```
 
