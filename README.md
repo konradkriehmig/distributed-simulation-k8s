@@ -11,20 +11,6 @@ Kubernetes (AKS) cluster via Indexed Job pattern, where the number of simulated 
 2) run the jobs on worker containers and receive a parquet as output
 3) aggregate NAVs and evaluate with summary stats and plots
 
-### File structure
-
-```
-etf_fairvalue/
-├── __init__.py
-├── fetch.py          # Step 1: Data fetch & config bundle
-├── worker.py         # Step 2: Monte Carlo simulation worker
-├── aggregate.py      # Aggregate results & produce report
-├── Dockerfile        # Container image for K8s workers
-└── k8s/
-    └── worker-job.yaml   # K8s Indexed Job manifest (100 workers)
-requirements-etf.txt      # Python dependencies
-```
-
 ### Installation
 
 ```bash
