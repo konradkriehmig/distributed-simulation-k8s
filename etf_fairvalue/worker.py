@@ -8,12 +8,12 @@ annualised covariance matrix and runs correlated Geometric Brownian Motion
 Writes the array of simulated NAV values as a Parquet file.
 
 Usage (standalone):
-    python -m etf_fairvalue.worker \\
-        --batch-id 0 \\
-        --num-paths 10000 \\
-        --horizon-days 5 \\
-        --seed 42 \\
-        --config-dir config \\
+    python -m etf_fairvalue.worker \
+        --batch-id 0 \
+        --num-paths 10000 \
+        --horizon-days 5 \
+        --seed 42 \
+        --config-dir config \
         --results-dir results
 """
 
@@ -45,7 +45,7 @@ def load_config(config_dir: Path) -> dict:
 
     Returns a dict with keys:
         tickers, weights, current_prices, mu, sigma, cov_matrix,
-        xlk_market_price, n_tickers
+        xlk_market_price, n_tickers, nav_scale_factor
     """
     npz_path = config_dir / "config_bundle.npz"
     meta_path = config_dir / "config_meta.json"
@@ -54,16 +54,33 @@ def load_config(config_dir: Path) -> dict:
     with open(meta_path) as fh:
         meta = json.load(fh)
 
+    weights = data["weights"]
+    current_prices = data["current_prices"]
+    xlk_market_price = meta["xlk_market_price"]
+
+    # ---------------------------------------------------------------------------
+    # FIX: Compute scaling factor to anchor weighted-average prices to ETF price.
+    #
+    # weights @ current_prices gives a weighted average of raw stock prices,
+    # but the ETF share price reflects total portfolio value / shares outstanding.
+    # This scale factor bridges the two so simulated NAV is in ETF-price units.
+    # ---------------------------------------------------------------------------
+    raw_nav = np.dot(weights, current_prices)
+    nav_scale_factor = xlk_market_price / raw_nav
+    print(f"[worker] NAV scale factor: {nav_scale_factor:.6f} "
+          f"(raw weighted avg = ${raw_nav:.2f}, XLK = ${xlk_market_price:.2f})")
+
     return {
         "tickers": meta["tickers"],
-        "xlk_market_price": meta["xlk_market_price"],
+        "xlk_market_price": xlk_market_price,
         "n_tickers": meta["n_tickers"],
         "generated_utc": meta.get("generated_utc"),
-        "weights": data["weights"],
-        "current_prices": data["current_prices"],
+        "weights": weights,
+        "current_prices": current_prices,
         "mu": data["mu"],
         "sigma": data["sigma"],
         "cov_matrix": data["cov_matrix"],
+        "nav_scale_factor": nav_scale_factor,
     }
 
 
@@ -102,13 +119,14 @@ def simulate_nav(
     horizon_days: int,
     num_paths: int,
     rng: np.random.Generator,
+    nav_scale_factor: float = 1.0,
 ) -> np.ndarray:
     """
     Loop-based GBM simulation. Provided for clarity; not the default.
 
     For each path:
       - Walk each stock forward *horizon_days* steps using correlated GBM
-      - Compute NAV = Σ weight_i * S_i(T)
+      - Compute NAV = scale * Σ weight_i * S_i(T)
 
     Returns array of shape (num_paths,) with simulated NAV values.
     """
@@ -125,7 +143,7 @@ def simulate_nav(
             diffusion = sigma * np.sqrt(DT) * z_cor
             prices = prices * np.exp(drift + diffusion)
 
-        nav_values[path_idx] = np.dot(weights, prices)
+        nav_values[path_idx] = np.dot(weights, prices) * nav_scale_factor
 
     return nav_values
 
@@ -144,6 +162,7 @@ def simulate_nav_vectorised(
     horizon_days: int,
     num_paths: int,
     rng: np.random.Generator,
+    nav_scale_factor: float = 1.0,
 ) -> np.ndarray:
     """
     Vectorised GBM simulation using numpy broadcasting.
@@ -172,8 +191,8 @@ def simulate_nav_vectorised(
         diffusion = sigma * np.sqrt(DT) * z_cor      # (num_paths, n)
         prices = prices * np.exp(drift + diffusion)
 
-    # NAV = weighted sum across tickers for each path
-    nav_values = prices @ weights                    # (num_paths,)
+    # NAV = weighted sum across tickers for each path, scaled to ETF price
+    nav_values = (prices @ weights) * nav_scale_factor  # (num_paths,)
     return nav_values
 
 
@@ -269,6 +288,7 @@ def main(argv: list[str] | None = None) -> None:
         horizon_days=args.horizon_days,
         num_paths=args.num_paths,
         rng=rng,
+        nav_scale_factor=cfg["nav_scale_factor"],
     )
     elapsed = time.perf_counter() - t0
 
@@ -277,7 +297,7 @@ def main(argv: list[str] | None = None) -> None:
 
     # 5. Write output
     out_path = write_results(nav_values, args.results_dir, args.batch_id)
-    print(f"[worker] Results written -> {out_path}")
+    print(f"[worker] Results written → {out_path}")
 
 
 if __name__ == "__main__":
