@@ -14,7 +14,7 @@ Delete any old config and create a fresh one:
 ```
 az aks get-credentials --resource-group <resource-group-name> --name <aks-cluster-name>
 ```
-
+- reupload the config bundle with the newly fetched data
 ```
 kubectl delete configmap config-bundle --ignore-not-found
 kubectl create configmap config-bundle --from-file=config/config_bundle.npz --from-file=config/config_meta.json
