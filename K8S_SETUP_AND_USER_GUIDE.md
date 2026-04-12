@@ -2,27 +2,7 @@
 
 ## Architecture Overview
 
-```
-Local machine                          Azure
-┌─────────────────┐     push      ┌──────────────────────────────┐
-│ Docker Desktop  │──────────────▶│ Azure Container Registry     │
-│ (build image)   │               │ (stores container image)     │
-└─────────────────┘               └──────────┬───────────────────┘
-                                             │ pull
-┌─────────────────┐   kubectl     ┌──────────▼───────────────────┐
-│ fetch.py        │──────────────▶│ Azure Kubernetes Service     │
-│ (config bundle) │  configmap    │                              │
-└─────────────────┘               │  ┌─────┐ ┌─────┐ ┌─────┐   │
-                                  │  │pod 0│ │pod 1│ │ ... │   │
-                                  │  └─────┘ └─────┘ └─────┘   │
-                                  │  100 pods × 10,000 paths    │
-                                  └──────────────────────────────┘
-                                             │
-┌─────────────────┐   kubectl     ───────────┘
-│ aggregate.py    │◀── logs/copy
-│ (combine & plot)│
-└─────────────────┘
-```
+<img width="839" height="1144" alt="image" src="https://github.com/user-attachments/assets/4785ad50-00e2-4df0-b531-59f691398888" />
 
 ---
 
