@@ -23,6 +23,6 @@ The **key takeaway** from the model is the spread prediction. Obtaining a spread
 
 The drift leading to the estimated NAV of XLK is based on historical trend and does not take into account any variables from outside the world of its 70 constituents. For example, an anouncement of a new technology of a private Chinese company (deepseek moment) could significantly impact the forecast. 
 
-The XLK spread is also vulnerable to external shocks but less so than the expected value. Spreads are in the short-term highly affected by the correlations among and the volatility of its constituents. Volatility trends are historically more persistent than the drift [1](http://rama.cont.perso.math.cnrs.fr/pdf/clustering.pdf).
+The XLK spread is also vulnerable to external shocks but less so than the expected value. Spreads are in the short-term highly affected by the correlations among and the volatility of its constituents. Volatility levels are historically more persistent than the drift [1](http://rama.cont.perso.math.cnrs.fr/pdf/clustering.pdf).
 
 Got to the setup guide: https://github.com/konradkriehmig/monte-carlo-sim-engine/blob/main/K8S_SETUP_AND_USER_GUIDE.md
