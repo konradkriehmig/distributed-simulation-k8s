@@ -27,6 +27,8 @@ The XLK spread is also vulnerable to external shocks but less so than the expect
 
 ### Performance
 
-I initially wanted to create a system that handles tasks in the cloud faster than on my laptop. However, I am using a decently powerful laptop with 12 amd cores and I have limited access to SKUs (only to D series for regular daily work). Therefore, I was not able to speed up the parallelism on my local laptop. 
+I initially wanted to create a system that handles tasks in the cloud faster than on my laptop. However, I am using a decently powerful laptop with 12 amd cores and I have limited access to SKUs (only to D series for regular daily work). Therefore, I was not able to speed up the parallelism on my local laptop using cloud resources. 
+
+This operation is handled well by my laptop even with a pathsize of 1M. Transferring parallel tasks like this to the cloud, spread across clusters increases complexity and hurts performance. While multiple continuous tasks make sense to deploy on AKS clusters, such a simple parallel task would be better executed on a monolithic system. A
 
 Got to the setup guide: https://github.com/konradkriehmig/monte-carlo-sim-engine/blob/main/K8S_SETUP_AND_USER_GUIDE.md
