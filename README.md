@@ -3,7 +3,7 @@
 Estimates the **fair value of the XLK ETF** by running correlated Geometric
 Brownian Motion (GBM) simulations across all ~70 stocks using a
 Cholesky-decomposed covariance matrix.  Designed to run at scale in parallel on a
-Kubernetes (AKS) cluster via Indexed Job pattern, where the number of simulated NAVs equals the number of pos times the number of paths on each pod.
+Kubernetes (AKS) cluster via Indexed Job pattern, where the number of simulated NAVs equals the number of pods times the number of paths on each pod.
 
 ### Workflow
 
