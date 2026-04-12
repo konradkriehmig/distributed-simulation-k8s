@@ -241,3 +241,13 @@ kubectl delete job etf-mc-job
 | `ImagePullBackOff` | Same as ErrImagePull, just K8s backing off retries | Fix the pull error, delete job, resubmit |
 | Pods stuck in `Pending` | Not enough resources on nodes | Reduce `parallelism` or add nodes |
 | `CrashLoopBackOff` | Worker code is crashing | Check `kubectl logs <pod>` for Python errors |
+
+### Key constants
+
+| Constant | Value |
+|---|---|
+| `TRADING_DAYS_PER_YEAR` | 252 |
+| Default `horizon_days` | 5 trading days |
+| Default `num_paths` per worker | 10,000 |
+| Default number of workers | 100 |
+| Total paths | 1,000,000 |
