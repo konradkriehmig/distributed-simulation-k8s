@@ -12,6 +12,7 @@ Kubernetes (AKS) cluster via Indexed Job pattern, where the number of simulated 
 3) aggregate NAVs and evaluate with summary stats and plots
 
 ### Results
+[I did not build the model myself, I just focused on building the underlying infrastructure in this project.]
 
 <img width="885" height="437" alt="image" src="https://github.com/user-attachments/assets/690bd7b6-460a-4234-a5d6-0f6bad3035a2" />
 
